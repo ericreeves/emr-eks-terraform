@@ -1,77 +1,8 @@
 ----
-**👏 EMR on EKS is now officially supported in [v4.13.0](https://github.com/hashicorp/terraform-provider-aws/releases/tag/v4.13.0) of the AWS Provider.👏**
-
-This repository is now deprecated.
-
-----
 
 # EMR on EKS with Terraform
 
-There's currently a [pull request](https://github.com/hashicorp/terraform-provider-aws/pull/20003) open for EMR on EKS support in Terraform.
-
-Until that gets merged, you can build your own version of the AWS Provider to test out the new code.
-
-💁 _Please note that this code is a proof-of-concept and not intended for production use_
-
-## Building the provider
-
-### Requirements
-
-- [Terraform](https://www.terraform.io/downloads.html) v0.14+ (to use the custom provider and deploy your cluster)
-- [Go](https://golang.org/doc/install) 1.16 (to build the provider plugin)
-    - Do **NOT** use Go 1.17 as it will error on [`gofmt`](https://golang.org/doc/go1.17#gofmt)
-    - Also if you can not use the offical Go module proxy, the project will not build due to [this issue](https://github.com/hashicorp/terraform/issues/29442)
-
-Here's the [full documentation on building the AWS provider](https://github.com/hashicorp/terraform-provider-aws/blob/main/docs/DEVELOPMENT.md), but in short here's what you need to do.
-
-Clone the repository and change into the directory
-
-```shell
-git clone git@github.com:terraform-providers/terraform-provider-aws
-cd terraform-provider-aws
-```
-
-Checkout the pull request.
-
-```shell
-git fetch origin pull/20003/head:emr-eks-terraform
-git checkout emr-eks-terraform
-```
-
-Run `make tools`. This will install the needed tools for the provider.
-
-```shell
-make tools
-```
-
-To compile the provider, run `make build`. This will build the provider and put the provider binary in the `$GOPATH/bin` (default: `$HOME/go`) directory.
-
-```shell
-make build
-```
-
-You should now have a `terraform-provider-aws` binary in your `$GOPATH`
-
-```shell
-which terraform-provider-aws
-```
-
-You'll need this path for the next step.
-
-## Override your AWS provider
-
-In order to make use of the change, you need to populate your Terraform CLI configuration file (`~/.terraformrc`) with the directory your new binary is in.
-
-```hcl
-provider_installation {
-  dev_overrides {
-    "hashicorp/aws" = "/Users/username/go/bin"
-  }
-  direct {}
-}
-```
-
-## Deploy your EMR on EKS virtual cluster!
+## Deploying EMR on EKS
 
 One note before getting started. The version of the EMR on EKS module needs to be pinned to `17.9.0` due to a [breaking change](https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1570) and the fact this PR is based off a specific version of the AWS provider.
 
@@ -135,3 +66,7 @@ helpful re: roles: https://github.com/hashicorp/terraform-provider-kubernetes/is
 ### Issues
 
 - `update_config` was broken: https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1570
+
+---
+
+Forked from https://github.com/dacort/emr-eks-terraform
